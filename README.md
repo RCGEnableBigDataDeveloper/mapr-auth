@@ -27,7 +27,7 @@ The REST API for mapr-auth is described below
 
 ### Request
 
-`GET api/v1/aces`
+`GET /api/v1/aces`
 
     curl -i -H 'Accept: application/json' http://localhost:8005/api/v1/aces/
     
