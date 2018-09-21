@@ -2,7 +2,7 @@
 
 Enpoints to interact with authorization components of a MapR cluster including MapR Access Control Expressions (ACES), MapR Roles, and Hive SQL Authorization
 
-This first iteration support MapR ACES only
+This first iteration supports MapR ACES only. This is a work in progress.
 
 
 ## Install
@@ -19,7 +19,7 @@ This first iteration support MapR ACES only
 
 # REST API
 
-The REST API to the example app is described below.
+The REST API for mapr-auth is described below.
 
 ## Get list of ACES
 
@@ -27,7 +27,7 @@ The REST API to the example app is described below.
 
 `GET /aces/`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/ces/
+    curl -i -H 'Accept: application/json' http://localhost:7000/aces/
 
 ### Response
 
@@ -39,8 +39,48 @@ The REST API to the example app is described below.
     Content-Length: 2
 
   ```
-  {"ace":{"name":"my_ace","access":{"createdAt":1537545619739,"type":"READDIR"}},"expressions":{"expression":[{"groupName":"group1","groupOperator":"&","operation":"&","order":0,"type":"u","value":"user1"},{"groupName":"group1","groupOperator":"&","operation":"!","order":1,"type":"g","value":"group1"},{"groupName":"group2","operation":"&","order":0,"type":"u","value":"user2"},{"groupName":"group2","order":1,"type":"g","value":"group2"}]}}
-  ```
+ {
+  "ace": {
+    "name": "my_ace",
+    "access": {
+      "createdAt": 1537545619739,
+      "type": "READDIR"
+    }
+  },
+  "expressions": {
+    "expression": [
+      {
+        "groupName": "group1",
+        "groupOperator": "&",
+        "operation": "&",
+        "order": 0,
+        "type": "u",
+        "value": "user1"
+      },
+      {
+        "groupName": "group1",
+        "groupOperator": "&",
+        "operation": "!",
+        "order": 1,
+        "type": "g",
+        "value": "group1"
+      },
+      {
+        "groupName": "group2",
+        "operation": "&",
+        "order": 0,
+        "type": "u",
+        "value": "user2"
+      },
+      {
+        "groupName": "group2",
+        "order": 1,
+        "type": "g",
+        "value": "group2"
+      }
+    ]
+  }
+} ```
 
 ## Create a new ACE
 
