@@ -4,9 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -43,35 +44,66 @@ public class MaprAuthAceTest extends JerseyTest {
 			WebTarget webTarget = target().path("aces");
 			MaprAce ace = webTarget.request(MediaType.APPLICATION_JSON).get(MaprAce.class);
 			Appendable buffer = new StringBuilder();
-			Map<String, List<AceExpression>> groups = new HashMap<String, List<AceExpression>>();
-			boolean needsParenthisis = ace.getExpressions().size() > 1;
-			if (needsParenthisis)
-				buffer.append("(");
+			Map<String, ExpressionHolder> groups = new TreeMap<String, ExpressionHolder>();
 			for (AceExpression ae : ace.getExpressions()) {
-				System.out.println();
-
-				if (groups.containsKey(ae.getGroup())) {
-					groups.get(ae.getGroup()).add(ae);
+				if (groups.containsKey(ae.getGroupName())) {
+					groups.get(ae.getGroupName()).getAceExpressions().add(ae);
 				} else {
 					List<AceExpression> groupList = new ArrayList<AceExpression>();
 					groupList.add(ae);
-					groups.put(ae.getGroup(), groupList);
-				}
-
-				System.out.println(groups);
-				
-				if (ae.getOperation() != null && !ae.getOperation().equals(AceOperator.NOT.get())) {
-					buffer.append(String.format("%s:%s %s", ae.getType(), ae.getValue(), ae.getOperation()));
-				} else {
-					buffer.append(String.format(" %s%s:%s", ae.getOperation(), ae.getType(), ae.getValue()));
+					ExpressionHolder holder = new ExpressionHolder(groupList, ae.getGroupOperator());
+					groups.put(ae.getGroupName(), holder);
 				}
 			}
-			if (needsParenthisis)
-				buffer.append("}");
+
+			for (Entry<String, ExpressionHolder> expressions : groups.entrySet()) {
+				buffer.append("(");
+				String groupOperator = null;
+				for (AceExpression expression : expressions.getValue().getAceExpressions()) {
+
+					groupOperator = expressions.getValue().getGroupOperator();
+					String operation = expression.getOperation();
+					if (operation != null && !operation.equals(AceOperator.NOT.get())) {
+						buffer.append(String.format("%s:%s %s", expression.getType(), expression.getValue(),
+								expression.getOperation()));
+					} else {
+						buffer.append(String.format(" %s%s:%s", (operation != null ? operation : ""),
+								expression.getType(), expression.getValue()));
+					}
+
+				}
+				buffer.append(") ").append(groupOperator != null ? groupOperator + " " : "");
+			}
 
 			System.out.println(buffer.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	class ExpressionHolder {
+		private List<AceExpression> aceExpressions;
+		private String groupOperator;
+
+		ExpressionHolder(final List<AceExpression> aceExpressions, final String groupOperator) {
+			this.aceExpressions = aceExpressions;
+			this.groupOperator = groupOperator;
+		}
+
+		public List<AceExpression> getAceExpressions() {
+			return aceExpressions;
+		}
+
+		public void setAceExpressions(List<AceExpression> aceExpressions) {
+			this.aceExpressions = aceExpressions;
+		}
+
+		public String getGroupOperator() {
+			return groupOperator;
+		}
+
+		public void setGroupOperator(String groupOperator) {
+			this.groupOperator = groupOperator;
 		}
 	}
 

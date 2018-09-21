@@ -1,0 +1,118 @@
+# mapr-auth REST API
+
+Enpoints to interact with authorization components of a MapR cluster including MapR Access Control Expressions (ACES), MapR Roles, and Hive SQL Authorization
+
+This first iteration support MapR ACES only
+
+
+## Install
+
+    mvn clean install -PcheckstyleSkip
+
+## Run the app
+
+    java -cp <path-to-dependecnies> com.mapr.auth.server.MapRAuthServer
+
+## Run the tests
+
+    mvn clean install -DskipTests=false -PcheckstyleSkip
+
+# REST API
+
+The REST API to the example app is described below.
+
+## Get list of ACES
+
+### Request
+
+`GET /aces/`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/ces/
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 2
+
+  ```
+  {"ace":{"name":"my_ace","access":{"createdAt":1537545619739,"type":"READDIR"}},"expressions":{"expression":[{"groupName":"group1","groupOperator":"&","operation":"&","order":0,"type":"u","value":"user1"},{"groupName":"group1","groupOperator":"&","operation":"!","order":1,"type":"g","value":"group1"},{"groupName":"group2","operation":"&","order":0,"type":"u","value":"user2"},{"groupName":"group2","order":1,"type":"g","value":"group2"}]}}
+  ```
+
+## Create a new ACE
+
+### Request
+
+`POST /ace/`
+
+    curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:7000/thing
+
+### Response
+
+    HTTP/1.1 201 Created
+    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Status: 201 Created
+    Connection: close
+    Content-Type: application/json
+    Location: /thing/1
+    Content-Length: 36
+
+    {"id":1,"name":"Foo","status":"new"}
+
+## Get a specific ACE
+
+### Request
+
+`GET /aces/id`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 36
+
+    {"id":1,"name":"Foo","status":"new"}
+
+## Change an ACE
+
+### Request
+
+`PUT /thing/:id`
+
+    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:31 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 41
+
+    {"id":1,"name":"Foo","status":"changed2"}
+
+
+
+## Delete an ACE
+
+### Request
+
+`DELETE /ace/id`
+
+    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
+
+### Response
+
+    HTTP/1.1 204 No Content
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 204 No Content
+    Connection: close

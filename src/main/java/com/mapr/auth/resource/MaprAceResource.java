@@ -11,9 +11,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mapr.auth.ace.AceAccessType;
 import com.mapr.auth.ace.AceExpression;
 import com.mapr.auth.ace.AceOperator;
-import com.mapr.auth.ace.AceAccessType;
 import com.mapr.auth.ace.MaprAce;
 import com.mapr.auth.ace.MaprAceBuilder;
 import com.mapr.fs.MapRFileAce;
@@ -36,17 +38,27 @@ public class MaprAceResource {
 	}
 
 	private static MaprAce createAce() {
-		AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", 0);
-		AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", 1);
+		AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", AceOperator.AND.get(), 0);
+		AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", AceOperator.AND.get(), 1);
 
-		List<AceExpression> expressions = Arrays.asList(a, b);
+		AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "group2", null, 0);
+		AceExpression d = new AceExpression("g", "group2", null, "group2", null, 1);
+
+		List<AceExpression> expressions = Arrays.asList(a, b, c, d);
 
 		MaprAce result = new MaprAceBuilder().with($ -> {
-			$.name = "Mr.";
+			$.name = "my_ace";
 			$.access = new AceAccessType(System.currentTimeMillis(), MapRFileAce.AccessType.READDIR);
 			$.expressions = expressions;
 			$.operator = AceOperator.AND.get();
 		}).build();
+
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			System.err.println(mapper.writeValueAsString(result));
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
 
 		return result;
 	}

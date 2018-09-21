@@ -13,18 +13,20 @@ public class AceExpression {
 	private String type;
 	private String value;
 	private String operation;
-	private String group;
+	private String groupName;
+	private String groupOperator;
 	private int order;
 
 	public AceExpression() {
 	}
 
-	public AceExpression(final String type, final String value, final String operation, final String group,
-			final int order) {
+	public AceExpression(final String type, final String value, final String operation, final String groupName,
+			final String groupOperator, final int order) {
 		this.type = type;
 		this.value = value;
 		this.operation = operation;
-		this.group = group;
+		this.groupName = groupName;
+		this.groupOperator = groupOperator;
 		this.order = order;
 	}
 
@@ -56,12 +58,21 @@ public class AceExpression {
 	}
 
 	@XmlAttribute
-	public String getGroup() {
-		return group;
+	public String getGroupName() {
+		return groupName;
 	}
 
-	public void setGroup(String group) {
-		this.group = group;
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	@XmlAttribute
+	public String getGroupOperator() {
+		return groupOperator;
+	}
+
+	public void setGroupOperator(String groupOperator) {
+		this.groupOperator = groupOperator;
 	}
 
 	@XmlAttribute
