@@ -137,7 +137,7 @@ The REST API for mapr-auth is described below
 
 ### Request
 
-`GET /aces/:id`
+`GET /api/v1/ace/:id`
 
     curl -i -H 'Accept: application/json' http://localhost:8005/api/v1/aces/my_ace
 
@@ -164,7 +164,7 @@ The REST API for mapr-auth is described below
 
 ### Request
 
-`POST /ace/:id`
+`POST /api/v1/ace/:id`
 
     curl -i -H 'Accept: application/json' -X PUT -d @FILENAME http://localhost:8005/api/v1/aces/1
 
@@ -192,7 +192,7 @@ The REST API for mapr-auth is described below
 
 ### Request
 
-`DELETE /ace/id`
+`DELETE /api/v1/ace/id`
 
     curl -i -H 'Accept: application/json' -X DELETE http://localhost:8005/api/v1/aces/1/
 
