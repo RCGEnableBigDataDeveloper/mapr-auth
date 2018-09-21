@@ -17,36 +17,36 @@ This first iteration supports MapR ACES only. This is a work in progress.
 
     mvn clean install -DskipTests=false -PcheckstyleSkip
     
-# JAVA API
+# Java API
 The mapr-auth API can be accessed directly from java code. The API leverages the builder pattern to create a MapR ACE object
 
-```
-		AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", AceOperator.AND.get(), 0);
-		AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", AceOperator.AND.get(), 1);
-		AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "group2", null, 0);
-		AceExpression d = new AceExpression("g", "group2", null, "group2", null, 1);
+```java
+AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", AceOperator.AND.get(), 0);
+AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", AceOperator.AND.get(), 1);
+AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "group2", null, 0);
+AceExpression d = new AceExpression("g", "group2", null, "group2", null, 1);
 
-		List<AceExpression> expressions = Arrays.asList(a, b, c, d);
+List<AceExpression> expressions = Arrays.asList(a, b, c, d);
 
-		MaprAce result = new MaprAceBuilder().with($ -> {
-			$.name = "my_ace";
-			$.access = new AceAccessType(System.currentTimeMillis(), MapRFileAce.AccessType.READDIR);
-			$.expressions = expressions;
-			$.operator = AceOperator.AND.get();
-		}).build();
+MaprAce result = new MaprAceBuilder().with($ -> {
+	$.name = "my_ace";
+	$.access = new AceAccessType(System.currentTimeMillis(), MapRFileAce.AccessType.READDIR);
+	$.expressions = expressions;
+	$.operator = AceOperator.AND.get();
+}).build();
 ```
 
 # REST API
 
-The REST API for mapr-auth is described below.
+The REST API for mapr-auth is described below
 
 ## Get list of ACES
 
 ### Request
 
-`GET /aces/`
+`GET api/v1/aces`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/aces/
+    curl -i -H 'Accept: application/json' http://localhost:7000/api/v1/aces/
 
 ### Response
 
@@ -106,9 +106,9 @@ The REST API for mapr-auth is described below.
 
 ### Request
 
-`POST /ace/`
+`PUT /api/v1/aces/`
 
-    curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:7000/thing
+    curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:7000/api/v1/aces
 
 ### Response
 
@@ -120,15 +120,15 @@ The REST API for mapr-auth is described below.
     Location: /thing/1
     Content-Length: 36
 
-    {"id":1,"name":"Foo","status":"new"}
+    {"id":1,"name":"my-ace","status":"created"}
 
 ## Get a specific ACE
 
 ### Request
 
-`GET /aces/id`
+`GET /aces/:id`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+    curl -i -H 'Accept: application/json' http://localhost:7000/api/v1/aces/my_ace
 
 ### Response
 
@@ -139,15 +139,58 @@ The REST API for mapr-auth is described below.
     Content-Type: application/json
     Content-Length: 36
 
-    {"id":1,"name":"Foo","status":"new"}
+  ```
+ {
+  "ace": {
+    "name": "my_ace",
+    "access": {
+      "createdAt": 1537545619739,
+      "type": "READDIR"
+    }
+  },
+  "expressions": {
+    "expression": [
+      {
+        "groupName": "group1",
+        "groupOperator": "&",
+        "operation": "&",
+        "order": 0,
+        "type": "u",
+        "value": "user1"
+      },
+      {
+        "groupName": "group1",
+        "groupOperator": "&",
+        "operation": "!",
+        "order": 1,
+        "type": "g",
+        "value": "group1"
+      },
+      {
+        "groupName": "group2",
+        "operation": "&",
+        "order": 0,
+        "type": "u",
+        "value": "user2"
+      },
+      {
+        "groupName": "group2",
+        "order": 1,
+        "type": "g",
+        "value": "group2"
+      }
+    ]
+  }
+} 
+```
 
 ## Change an ACE
 
 ### Request
 
-`PUT /thing/:id`
+`PUT /ace/:id`
 
-    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/thing/1
+    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/api/v1/aces/1
 
 ### Response
 
@@ -158,7 +201,7 @@ The REST API for mapr-auth is described below.
     Content-Type: application/json
     Content-Length: 41
 
-    {"id":1,"name":"Foo","status":"changed2"}
+    {"id":1,"name":"my_ace","status":"modified"}
 
 
 
@@ -168,7 +211,7 @@ The REST API for mapr-auth is described below.
 
 `DELETE /ace/id`
 
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
+    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/api/v1/aces/1/
 
 ### Response
 
