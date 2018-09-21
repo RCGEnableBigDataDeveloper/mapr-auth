@@ -17,28 +17,6 @@ This first iteration supports MapR ACES only. This is a work in progress.
 
     mvn clean install -DskipTests=false -PcheckstyleSkip
     
-# Java API
-
-The mapr-auth API can be accessed directly from java code. The API leverages the builder pattern to create a MapR ACE object. For example, the following snippet...
-
-```java
-AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "g1", AceOperator.AND.get(), 0);
-AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "g1", AceOperator.AND.get(), 1);
-AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "g2", null, 0);
-AceExpression d = new AceExpression("g", "group2", null, "g2", null, 1);
-
-List<AceExpression> expressions = Arrays.asList(a, b, c, d);
-
-MaprAce result = new MaprAceBuilder().with($ -> {
-	$.name = "my_ace";
-	$.access = new AceAccessType(System.currentTimeMillis(), MapRFileAce.AccessType.READDIR);
-	$.expressions = expressions;
-}).build();
-```
-
-would produce this ACE expression...
-
-(u:user1 & !g:group1) & (u:user2 & g:group2) 
 
 
 # REST API
@@ -87,7 +65,7 @@ The REST API for mapr-auth is described below
 
 `PUT /api/v1/aces/`
 
-    curl -i -H 'Accept: application/json' -d 'name=Foo&status=new' http://localhost:8005/api/v1/aces
+    curl -i -H 'Accept: application/json' -d @FILENAME http://localhost:8005/api/v1/aces
     
 ### Body
 ```json
@@ -95,7 +73,7 @@ The REST API for mapr-auth is described below
   "ace": {
     "name": "my_ace",
     "access": {
-      "createdAt": 1537545619739,
+      "path": "/users/mypath",
       "type": "READDIR"
     }
   },
@@ -188,7 +166,7 @@ The REST API for mapr-auth is described below
 
 `POST /ace/:id`
 
-    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:8005/api/v1/aces/1
+    curl -i -H 'Accept: application/json' -X PUT -d @FILENAME http://localhost:8005/api/v1/aces/1
 
 ### Response
 
@@ -233,3 +211,27 @@ The REST API for mapr-auth is described below
         "ace": "(u:user3 & !g:group3) & (u:user4 & g:group4)"
       }
 ```      
+
+
+# Java API
+
+The mapr-auth API can be accessed directly from java code. The API leverages the builder pattern to create a MapR ACE object. For example, the following snippet...
+
+```java
+AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "g1", AceOperator.AND.get(), 0);
+AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "g1", AceOperator.AND.get(), 1);
+AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "g2", null, 0);
+AceExpression d = new AceExpression("g", "group2", null, "g2", null, 1);
+
+List<AceExpression> expressions = Arrays.asList(a, b, c, d);
+
+MaprAce result = new MaprAceBuilder().with($ -> {
+	$.name = "my_ace";
+	$.access = new AceAccessType(System.currentTimeMillis(), MapRFileAce.AccessType.READDIR);
+	$.expressions = expressions;
+}).build();
+```
+
+would produce this ACE expression...
+
+(u:user1 & !g:group1) & (u:user2 & g:group2) 

@@ -1,13 +1,10 @@
 package com.mapr.test.auth;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -20,10 +17,16 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mapr.auth.ace.AceAccessType;
 import com.mapr.auth.ace.AceExpression;
 import com.mapr.auth.ace.AceOperator;
 import com.mapr.auth.ace.MaprAce;
+import com.mapr.auth.ace.MaprAceBuilder;
+import com.mapr.auth.resource.MaprAceSupport;
 import com.mapr.auth.server.MapRAuthServer;
+import com.mapr.fs.MapRFileAce;
 
 public class MaprAuthAceTest extends JerseyTest {
 
@@ -40,71 +43,9 @@ public class MaprAuthAceTest extends JerseyTest {
 
 	@Test
 	public void testGetAce() {
-		try {
-			WebTarget webTarget = target().path("aces");
-			MaprAce ace = webTarget.request(MediaType.APPLICATION_JSON).get(MaprAce.class);
-			Appendable buffer = new StringBuilder();
-			Map<String, ExpressionHolder> groups = new TreeMap<String, ExpressionHolder>();
-			for (AceExpression ae : ace.getExpressions()) {
-				if (groups.containsKey(ae.getGroupName())) {
-					groups.get(ae.getGroupName()).getAceExpressions().add(ae);
-				} else {
-					List<AceExpression> groupList = new ArrayList<AceExpression>();
-					groupList.add(ae);
-					ExpressionHolder holder = new ExpressionHolder(groupList, ae.getGroupOperator());
-					groups.put(ae.getGroupName(), holder);
-				}
-			}
-
-			for (Entry<String, ExpressionHolder> expressions : groups.entrySet()) {
-				buffer.append("(");
-				String groupOperator = null;
-				for (AceExpression expression : expressions.getValue().getAceExpressions()) {
-
-					groupOperator = expressions.getValue().getGroupOperator();
-					String operation = expression.getOperation();
-					if (operation != null && !operation.equals(AceOperator.NOT.get())) {
-						buffer.append(String.format("%s:%s %s", expression.getType(), expression.getValue(),
-								expression.getOperation()));
-					} else {
-						buffer.append(String.format(" %s%s:%s", (operation != null ? operation : ""),
-								expression.getType(), expression.getValue()));
-					}
-
-				}
-				buffer.append(") ").append(groupOperator != null ? groupOperator + " " : "");
-			}
-
-			System.out.println(buffer.toString());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	class ExpressionHolder {
-		private List<AceExpression> aceExpressions;
-		private String groupOperator;
-
-		ExpressionHolder(final List<AceExpression> aceExpressions, final String groupOperator) {
-			this.aceExpressions = aceExpressions;
-			this.groupOperator = groupOperator;
-		}
-
-		public List<AceExpression> getAceExpressions() {
-			return aceExpressions;
-		}
-
-		public void setAceExpressions(List<AceExpression> aceExpressions) {
-			this.aceExpressions = aceExpressions;
-		}
-
-		public String getGroupOperator() {
-			return groupOperator;
-		}
-
-		public void setGroupOperator(String groupOperator) {
-			this.groupOperator = groupOperator;
-		}
+		WebTarget webTarget = target().path("aces");
+		MaprAce ace = webTarget.request(MediaType.APPLICATION_JSON).get(MaprAce.class);
+		assertNotNull(ace);
 	}
 
 	@Test
@@ -114,5 +55,26 @@ public class MaprAuthAceTest extends JerseyTest {
 		webTarget.request(MediaType.APPLICATION_XML).put(Entity.entity(ace, MediaType.APPLICATION_XML));
 		ace = webTarget.request(MediaType.APPLICATION_XML).get(MaprAce.class);
 		assertEquals(ace, ace);
+	}
+
+	@Test
+	public void testBuildExpression() {
+
+		AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", AceOperator.AND.get(), 0);
+		AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", AceOperator.AND.get(), 1);
+		AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "group2", null, 0);
+		AceExpression d = new AceExpression("g", "group2", null, "group2", null, 1);
+
+		List<AceExpression> expressions = Arrays.asList(a, b, c, d);
+
+		MaprAce ace = new MaprAceBuilder().with($ -> {
+			$.name = "my_ace";
+			$.access = new AceAccessType("/tmp/mydir", MapRFileAce.AccessType.READDIR);
+			$.expressions = expressions;
+		}).build();
+
+		MaprAceSupport support = new MaprAceSupport();
+		String expression = support.buildExpression(ace);
+		assertNotNull(expression);
 	}
 }

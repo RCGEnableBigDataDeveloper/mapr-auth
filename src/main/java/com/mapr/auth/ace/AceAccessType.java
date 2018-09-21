@@ -5,20 +5,19 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.mapr.fs.MapRFileAce;
 
 public class AceAccessType {
 
-	private long createdAt;
+	private String path;
 	private MapRFileAce.AccessType type;
 
 	public AceAccessType() {
 	}
 
-	public AceAccessType(final long createdAt, final MapRFileAce.AccessType type) {
-		this.createdAt = createdAt;
+	public AceAccessType(final String path, final MapRFileAce.AccessType type) {
+		this.path = path;
 		this.type = type;
 	}
 
@@ -31,13 +30,13 @@ public class AceAccessType {
 		this.type = type;
 	}
 
-	@XmlAttribute(name = "createdAt")
-	public long getCreatedAt() {
-		return createdAt;
+	@XmlAttribute(name = "path")
+	public String getPath() {
+		return path;
 	}
 
-	public void setCreatedAt(long createdAt) {
-		this.createdAt = createdAt;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	@Override
