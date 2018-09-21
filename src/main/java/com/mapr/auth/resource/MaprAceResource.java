@@ -40,9 +40,9 @@ public class MaprAceResource {
 	}
 
 	private static MaprAce createAce() {
+		
 		AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", AceOperator.AND.get(), 0);
 		AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", AceOperator.AND.get(), 1);
-
 		AceExpression c = new AceExpression("u", "user2", AceOperator.AND.get(), "group2", null, 0);
 		AceExpression d = new AceExpression("g", "group2", null, "group2", null, 1);
 
@@ -52,7 +52,6 @@ public class MaprAceResource {
 			$.name = "my_ace";
 			$.access = new AceAccessType(System.currentTimeMillis(), MapRFileAce.AccessType.READDIR);
 			$.expressions = expressions;
-			$.operator = AceOperator.AND.get();
 		}).build();
 
 		ObjectMapper mapper = new ObjectMapper();
