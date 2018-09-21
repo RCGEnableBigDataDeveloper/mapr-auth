@@ -36,7 +36,7 @@ public final class MaprAceResource extends MaprAceSupport {
 
 		try {
 			if (path.equals("mock"))
-				return Response.ok(createAce()).build();
+				return Response.ok(createMockAce()).build();
 			
 			List<MapRFileAce> aces = getMaprAce(path);
 			return Response.ok(aces).build();
@@ -56,7 +56,7 @@ public final class MaprAceResource extends MaprAceSupport {
 		return Response.ok(c).build();
 	}
 
-	private static MaprAce createAce() {
+	private static MaprAce createMockAce() {
 
 		AceExpression a = new AceExpression("u", "user1", AceOperator.AND.get(), "group1", AceOperator.AND.get(), 0);
 		AceExpression b = new AceExpression("g", "group1", AceOperator.NOT.get(), "group1", AceOperator.AND.get(), 1);
