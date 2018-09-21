@@ -1,6 +1,6 @@
 # mapr-auth API
 
-Microservice Enpoints to interact with authorization components of a MapR cluster including MapR Access Control Expressions (ACES), MapR Roles, and Hive SQL Authorization
+API to interact with authorization components of a MapR cluster including MapR Access Control Expressions (ACES), MapR Roles, and Hive SQL Authorization
 
 This first iteration supports MapR ACES only. This is a work in progress.
 
