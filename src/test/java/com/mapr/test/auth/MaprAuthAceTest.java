@@ -76,5 +76,8 @@ public class MaprAuthAceTest extends JerseyTest {
 		MaprAceSupport support = new MaprAceSupport();
 		String expression = support.buildExpression(ace);
 		assertNotNull(expression);
+		System.out.println("***********************************************");
+		System.out.println(expression);
+		System.out.println("***********************************************");
 	}
 }

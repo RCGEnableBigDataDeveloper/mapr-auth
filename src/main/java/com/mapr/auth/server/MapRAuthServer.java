@@ -37,7 +37,7 @@ public class MapRAuthServer {
 			CLStaticHttpHandler httpHandler = new CLStaticHttpHandler(HttpServer.class.getClassLoader(), "/static/");
 			server.getServerConfiguration().addHttpHandler(httpHandler, "/");
 
-			logger.info("vdm server started at " + BASE_URI);
+			logger.info("server started at " + BASE_URI);
 			
 			Thread.currentThread().join();
 

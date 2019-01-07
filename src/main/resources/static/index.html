@@ -1,1 +1,249 @@
-<img src="/img/logo.png"/>
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<title></title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans:400,300,300italic,400italic,500,500italic,700,700italic">
+<link rel="stylesheet" href="/css/main.css?v=5">
+<!-- <link rel="stylesheet" href="/css/demo-grid.css?v=5"> -->
+<link rel="stylesheet" href="/css/demo-kanban.css?v=5">
+<link href="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+<link rel="stylesheet" href="https://emluis.outsystemscloud.com/zTree/Blocks/zTree/Widget/zTree.css?2607" />
+
+<style>
+.row {
+	width: 100%;
+	margin: 0 auto;
+}
+
+.block {
+	width: 100px;
+	float: left;
+}
+
+section {
+	padding: 0px !important;
+}
+</style>
+</head>
+<body>
+
+	<div style="width: 100%; border-bottom: 1px solid #ccc; padding-top: 10px">
+		<div>
+			<img src="/img/logo.png" />
+			<div style="float: right; padding-right: 20px; padding-top: 5px;">asdasd</div>
+		</div>
+	</div>
+
+
+	<div class="row">
+		<div class="block" style="width: 10%">
+			<ul id="tree" class="ztree"></ul>
+		</div>
+
+		<div class="block" style="width: 60%;">
+
+			<section class="kanban-demo" style="position: relative; top: -50px">
+				<div class="board">
+					<div class="board-column todo">
+						<div class="board-column-header">To do</div>
+						<div class="board-column-content" id='todo'></div>
+					</div>
+					<div class="board-column working">
+						<div class="board-column-header">Working</div>
+						<div class="board-column-content" id='working'></div>
+					</div>
+					<div class="board-column done">
+						<div class="board-column-header">Done</div>
+						<div class="board-column-content" id='done'></div>
+					</div>
+				</div>
+
+			</section>
+
+		</div>
+
+		<div class="block" style="width: 30%">XXXXXXXXXXXXXXXXXXXXXXXXXXx</div>
+
+	</div>
+
+	<section>
+		<div id="ex1" class="modal">
+			<p>
+				<span id="modal-msg"></span>
+			</p>
+			<a href="#" rel="modal:close">Close</a>
+		</div>
+	</section>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script src="/js/web-animations-2.3.1.min.js"></script>
+	<script src="/js/hammer-2.0.8.min.js"></script>
+	<script src="/js/muuri-0.7.0.js"></script>
+	<!-- 	<script src="/js/demo-grid.js?v=5"></script> -->
+	<script src="/js/demo-kanban.js?v=5"></script>
+	<script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.contextMenu.js" type="text/javascript"></script>
+	<script src="https://swisnl.github.io/jQuery-contextMenu/dist/jquery.ui.position.min.js" type="text/javascript"></script>
+	<script src="https://swisnl.github.io/jQuery-contextMenu/js/main.js" type="text/javascript"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+	<script src="https://emluis.outsystemscloud.com/zTreeExample/Blocks/zTree/Widget/zTree.js?2607"></script>
+
+</body>
+
+<style>
+.modal a.close-modal[class*="icon-"] {
+	top: -10px;
+	right: -10px;
+	width: 30px;
+	height: 30px;
+	color: #fff;
+	line-height: 1.40;
+	text-align: center;
+	text-decoration: none;
+	text-indent: 0;
+	background: #900;
+	border: 2px solid #fff;
+	-webkit-border-radius: 26px;
+	-moz-border-radius: 26px;
+	-o-border-radius: 26px;
+	-ms-border-radius: 26px;
+	-moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+	overflow-y: visible !important;
+}
+</style>
+<script>
+	$(".board-item-content").dblclick(function() {
+		console.log($(this));
+	});
+
+	var setting = {
+		edit : {
+			enable : true,
+			showRemoveBtn : false,
+			showRenameBtn : false
+		},
+		data : {
+			simpleData : {
+				enable : true
+			}
+		},
+		callback : {
+			beforeDrag : beforeDrag,
+			beforeDrop : beforeDrop,
+			beforeDragOpen : beforeDragOpen,
+			onDrag : onDrag,
+			onDrop : onDrop,
+			onExpand : onExpand,
+			onRightClick : onRightClick
+		}
+
+	};
+
+	function onBodyMouseDown(event) {
+		if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
+			rMenu.css({
+				"visibility" : "hidden"
+			});
+		}
+	}
+
+	function onRightClick(event, treeId, treeNode) {
+		console.log(event);
+	}
+
+	function beforeDrag(treeId, treeNodes) {
+
+	}
+	function beforeDragOpen(treeId, treeNode) {
+
+	}
+	function beforeDrop(treeId, treeNodes, targetNode, moveType, isCopy) {
+
+	}
+	function onDrag(event, treeId, treeNodes) {
+
+	}
+	function onDrop(event, treeId, treeNodes, targetNode, moveType, isCopy) {
+
+		var iDiv = document.createElement('div'), jDiv = document.createElement('div');
+		iDiv.id = treeNodes[0].id;
+		iDiv.className = 'board-item';
+		jDiv.className = 'board-item-content';
+		jDiv.innerHTML = treeNodes[0].name + "<select><option>aaa</option><option>bbb</option></select>";
+		iDiv.appendChild(jDiv);
+
+		if (event.target.className === "board-column-content muuri") {
+			event.target.appendChild(iDiv);
+		} else if (event.target.className === "board-item-content") {
+			$(event.target).closest(".board-column-content")[0].appendChild(iDiv);
+		} else {
+			return false;
+		}
+
+		load();
+	}
+	function onExpand(event, treeId, treeNode) {
+		console.log(treeNode);
+	}
+
+	var zTree, rMenu;
+
+	$.ajax("http://localhost:8005/api/v1/cluster?hive=123").done(function(data) {
+		var zNodes = data.databases[0];
+		$.fn.zTree.init($("#tree"), setting, zNodes);
+		zTree = $.fn.zTree.getZTreeObj("tree");
+	}).fail(function(data) {
+		console.log(data);
+	});
+
+	$(function() {
+		$.contextMenu({
+			selector : '.board-item-content',
+			callback : function(key, options) {
+				var m = "clicked: " + key;
+				console.log(options);
+				$("#ex1").modal({
+					closeClass : 'icon-remove',
+					closeText : 'x'
+				});
+				$("#modal-msg").html("test message");
+			},
+			items : {
+				"edit" : {
+					name : "Edit",
+					icon : "edit"
+				},
+				"cut" : {
+					name : "Cut",
+					icon : "cut"
+				},
+				copy : {
+					name : "Copy",
+					icon : "copy"
+				},
+				"paste" : {
+					name : "Paste",
+					icon : "paste"
+				},
+				"delete" : {
+					name : "Delete",
+					icon : "delete"
+				},
+				"sep1" : "---------",
+				"quit" : {
+					name : "Quit",
+					icon : function() {
+						return 'context-menu-icon context-menu-icon-quit';
+					}
+				}
+			}
+		});
+	});
+</script>
+
+</html>
