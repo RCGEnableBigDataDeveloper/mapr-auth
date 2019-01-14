@@ -14,8 +14,8 @@ import java.sql.Statement;
 import java.sql.DriverManager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.uhg.mapr.hdfs.ConnectionConfig;
-import com.uhg.mapr.hdfs.HdfsConnection;
+import com.mapr.auth.ConnectionConfig;
+import com.mapr.auth.hdfs.HdfsConnection;
 
 @Path("/entry-point")
 public class EntryPoint {

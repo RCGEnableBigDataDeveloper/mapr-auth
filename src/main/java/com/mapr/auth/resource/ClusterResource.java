@@ -21,11 +21,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.mapr.auth.ConnectionConfig;
+import com.mapr.auth.ItemDefinition;
+import com.mapr.auth.hdfs.HdfsConnection;
 import com.mapr.auth.server.MapRAuthServer;
 import com.mapr.auth.util.HttpUtil;
-import com.uhg.mapr.hdfs.ConnectionConfig;
-import com.uhg.mapr.hdfs.HdfsConnection;
-import com.uhg.mapr.hdfs.ItemDefinition;
 
 @Path("/cluster")
 public class ClusterResource {

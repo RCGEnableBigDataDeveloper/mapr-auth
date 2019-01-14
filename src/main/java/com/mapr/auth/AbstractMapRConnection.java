@@ -1,4 +1,4 @@
-package com.uhg.mapr.hdfs;
+package com.mapr.auth;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class AbstractDataLakeConnection {
+public abstract class AbstractMapRConnection {
 
-	protected AbstractDataLakeConnection(ConnectionConfig config) {
+	protected AbstractMapRConnection(ConnectionConfig config) {
 
+		
 	}
 
 	protected List<Map<String, String>> map(ResultSet rs) throws SQLException {

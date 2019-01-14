@@ -1,4 +1,4 @@
-package com.uhg.mapr.hdfs;
+package com.mapr.auth;
 
 import java.io.Serializable;
 import java.util.List;

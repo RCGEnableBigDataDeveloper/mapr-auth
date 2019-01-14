@@ -1,4 +1,4 @@
-package com.uhg.mapr.hdfs;
+package com.mapr.auth.hdfs;
 
 import java.util.concurrent.atomic.AtomicLong;
 

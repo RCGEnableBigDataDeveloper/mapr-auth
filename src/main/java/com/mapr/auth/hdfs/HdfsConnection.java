@@ -1,4 +1,4 @@
-package com.uhg.mapr.hdfs;
+package com.mapr.auth.hdfs;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -17,7 +17,12 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.log4j.Logger;
 
-public class HdfsConnection extends AbstractDataLakeConnection implements DataLakeConnection {
+import com.mapr.auth.AbstractMapRConnection;
+import com.mapr.auth.ConnectionConfig;
+import com.mapr.auth.MapRConnection;
+import com.mapr.auth.ItemDefinition;
+
+public class HdfsConnection extends AbstractMapRConnection implements MapRConnection {
 
 	private final Logger logger = Logger.getLogger(getClass());
 
