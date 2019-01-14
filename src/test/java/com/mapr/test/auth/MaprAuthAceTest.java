@@ -30,11 +30,11 @@ import com.mapr.fs.MapRFileAce;
 
 public class MaprAuthAceTest extends JerseyTest {
 
-	@Override
-	protected Application configure() {
-		forceSet(TestProperties.CONTAINER_PORT, "8086");
-		return MapRAuthServer.createApp();
-	}
+//	@Override
+//	protected Application configure() {
+//		forceSet(TestProperties.CONTAINER_PORT, "8086");
+//		return MapRAuthServer.createApp();
+//	}
 
 	@Override
 	protected void configureClient(ClientConfig config) {

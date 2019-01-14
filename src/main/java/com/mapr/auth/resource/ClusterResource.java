@@ -1,34 +1,31 @@
 package com.mapr.auth.resource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
 import com.mapr.auth.server.MapRAuthServer;
-import com.rcggs.datalake.connect.hive.HiveConnection;
-import com.rcggs.datalake.core.model.ConnectionConfig;
-import com.rcggs.datalake.core.model.ItemDefinition;
-
-import test.HttpUtil;
+import com.mapr.auth.util.HttpUtil;
+import com.uhg.mapr.hdfs.ConnectionConfig;
+import com.uhg.mapr.hdfs.HdfsConnection;
+import com.uhg.mapr.hdfs.ItemDefinition;
 
 @Path("/cluster")
 public class ClusterResource {
@@ -36,6 +33,42 @@ public class ClusterResource {
 	private static final Logger logger = Logger.getLogger(MapRAuthServer.class);
 
 	private final static ObjectMapper mapper = new ObjectMapper();
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response test(@QueryParam("test") String path) {
+
+		try {
+			return Response.ok(mapper.writeValueAsString("hello")).build();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHdfs(@QueryParam("hdfs") String path) {
+		ConnectionConfig c = new ConnectionConfig();
+		HdfsConnection hdfs = new HdfsConnection(c);
+		try {
+			hdfs.start("/user/eperler");
+
+//		for(Map.Entry<String, ItemDefinition> item: hdfs.items.entrySet()) {
+//			System.out.println(item.getKey());
+//		}
+
+			return Response.ok(mapper.writeValueAsString(hdfs.items)).build();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
